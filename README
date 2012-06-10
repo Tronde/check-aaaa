@@ -1,0 +1,76 @@
+Program:	check-aaaa: AAAA response checker
+Version:	0.1
+Author:		Shumon Huque <shuque@upenn.edu>
+
+check-aaaa: A small python program to query a set of DNS names
+for the presence of AAAA records via a set of DNS recursive
+resolvers.
+
+I wrote this quick program on World IPv6 Launch Day (June 6th 2012),
+after I discovered that some websites were selectively delivering
+AAAA records to DNS resolvers, based on measurements by those websites
+of the quality of IPv6 connectivity from clients using those resolvers.
+Running this program periodically against your own resolvers can
+alert you to times when they end up on such AAAA blacklists. The
+four website names that are preconfigured into this script (google,
+facebook, netflix, and bing) have been known to implement such blacklists.
+
+Pre-requisites:
+
+	Python 2.x
+	dnspython module (http://www.dnspython.org/)
+
+Configuration:
+
+    * Edit "check-aaaa" to configure your own list of DNS
+      recursive resolvers and your own list of DNS names 
+      that you want to test. These lists are defined in the
+      python lists RESOLVERS and QNAMES.
+
+Installation:
+
+    * System wide (typically /usr/bin or /usr/local/bin), as root:
+
+        python setup.py install
+
+    * In your home directory ($HOME/bin):
+
+        python setup.py install --home=$HOME
+
+    * Or just copy the "check-aaaa" file to wherever you want to put it.
+
+Example (hypothetical) runs:
+
+The following example has no output (and a return code of 0)
+indicating that all provided names eliciting AAAA reponses via
+all provided recursive resolvers.
+
+  $ check-aaaa
+
+The following example, shows that one of the resolvers (192.0.2.173)
+did not get a AAAA response for www.google.com, while another 
+(198.51.100.29) did not get a AAAA response for www.netflix.com.
+
+  $ check-aaaa
+  resolver1,192.0.2.173 -> www.google.com. not returning AAAA
+  resolver2,198.51.100.29 -> www.netflix.com. not returning AAAA
+
+
+# Copyright (C) 2012, Shumon Huque
+#
+# check-aaaa is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# check-aaaa is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with pydig; see the file COPYING.  If not, write to the Free
+# Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA 02110-1301, USA.
+#
+# Author: Shumon Huque <shuque -@- upenn.edu>

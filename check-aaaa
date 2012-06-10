@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+#
+# check-aaaa: A small python program to query a set of DNS names
+# for the presence of AAAA records via a set of DNS recursive
+# resolvers.
+# Author: Shumon Huque <shuque@upenn.edu>
+#
+
+import os, sys
+import dns.message, dns.query
+
+# List of DNS recursive resolvers to test. Entries in the list are 
+# tuples of shortname and IP address (IPv4 or IPv6).
+RESOLVERS = [
+    ("resolver1", "192.0.2.173"),
+    ("resolver2", "198.51.100.29"),
+    ("resolver3", "10.4.4.4"),
+    ]
+
+# List of DNS names to test for presence of AAAA records
+QNAMES = [
+    "www.google.com.",
+    "www.facebook.com.",
+    "www.bing.com.",
+    "www.netflix.com.",
+    ]
+
+rc = 0
+for resolver_name, resolver_ip in RESOLVERS:
+    for qname in QNAMES:
+        msg = dns.message.make_query(qname, 'AAAA')
+        try:
+            res = dns.query.udp(msg, resolver_ip, timeout=5)
+        except dns.exception.Timeout:
+            rc = 1
+            print "%s,%s -> %s query timed out" % \
+                (resolver_name, resolver_ip, qname)
+            continue
+        found_AAAA = False
+        for rrset in res.answer:
+            if rrset.rdtype == 28:             # RR type code for AAAA
+                found_AAAA = True
+        if not found_AAAA:
+            rc = 1
+            print "%s,%s -> %s not returning AAAA" % \
+                (resolver_name, resolver_ip, qname)
+
+sys.exit(rc)
