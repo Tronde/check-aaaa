@@ -10,7 +10,8 @@ import os, sys
 import dns.message, dns.query
 
 # List of DNS recursive resolvers to test. Entries in the list are 
-# tuples of shortname and IP address (IPv4 or IPv6).
+# tuples of shortname and IP address (IPv4 or IPv6). Replace these
+# with your own resolver addresses.
 RESOLVERS = [
     ("resolver1", "192.0.2.173"),
     ("resolver2", "198.51.100.29"),
@@ -36,11 +37,10 @@ for resolver_name, resolver_ip in RESOLVERS:
             print "%s,%s -> %s query timed out" % \
                 (resolver_name, resolver_ip, qname)
             continue
-        found_AAAA = False
         for rrset in res.answer:
             if rrset.rdtype == 28:             # RR type code for AAAA
-                found_AAAA = True
-        if not found_AAAA:
+                break
+        else:
             rc = 1
             print "%s,%s -> %s not returning AAAA" % \
                 (resolver_name, resolver_ip, qname)
