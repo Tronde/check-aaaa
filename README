@@ -1,5 +1,5 @@
 Program:	check-aaaa: AAAA response checker
-Version:	0.2
+Version:	0.3
 Author:		Shumon Huque <shuque@upenn.edu>
 
 check-aaaa: A small python program to query a set of DNS names
