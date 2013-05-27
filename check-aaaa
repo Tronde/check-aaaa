@@ -6,7 +6,7 @@
 # Author: Shumon Huque <shuque@upenn.edu>
 #
 
-import os, sys
+import os, sys, time
 import dns.message, dns.query
 
 # List of DNS recursive resolvers to test. Entries in the list are 
@@ -18,6 +18,9 @@ RESOLVERS = [
     ("resolver3", "10.4.4.4"),
     ]
 
+RETRIES=3
+TIMEOUT=3
+
 # List of DNS names to test for presence of AAAA records
 QNAMES = [
     "www.google.com.",
@@ -26,16 +29,29 @@ QNAMES = [
     "www.netflix.com.",
     ]
 
-rc = 0
-for resolver_name, resolver_ip in RESOLVERS:
-    for qname in QNAMES:
-        msg = dns.message.make_query(qname, 'AAAA')
+
+def send_query_udp(qname, res_name, res_ip, timeout, retries):
+    gotresponse = False
+    res = None
+    msg = dns.message.make_query(qname, 'AAAA')
+    while (not gotresponse and (retries > 0)):
+        retries -= 1
         try:
-            res = dns.query.udp(msg, resolver_ip, timeout=5)
+            ## print "DEBUG: query %s %s" % (res_ip, qname)
+            res = dns.query.udp(msg, res_ip, timeout=timeout)
+            gotresponse = True
         except dns.exception.Timeout:
+            pass
+    return res
+
+
+rc = 0
+for res_name, res_ip in RESOLVERS:
+    for qname in QNAMES:
+        res = send_query_udp(qname, res_name, res_ip, TIMEOUT, RETRIES)
+        if res == None:
             rc = 1
-            print "%s,%s -> %s query timed out" % \
-                (resolver_name, resolver_ip, qname)
+            print "%s,%s -> %s query timed out" % (res_name, res_ip, qname)
             continue
         for rrset in res.answer:
             if rrset.rdtype == 28:             # RR type code for AAAA
@@ -43,6 +59,6 @@ for resolver_name, resolver_ip in RESOLVERS:
         else:
             rc = 1
             print "%s,%s -> %s not returning AAAA" % \
-                (resolver_name, resolver_ip, qname)
+                (res_name, res_ip, qname)
 
 sys.exit(rc)
