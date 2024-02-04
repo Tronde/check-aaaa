@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='check-aaaa',
-      version='0.4',
+      version='1.0.0',
       scripts=['check-aaaa'],
       description='Check AAAA responses for set of DNS names',
       author='Joerg Kastning',
