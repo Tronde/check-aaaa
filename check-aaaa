@@ -3,8 +3,11 @@
 # check-aaaa: A small python program to query a set of DNS names
 # for the presence of AAAA records via a set of DNS recursive
 # resolvers.
-# Author: Shumon Huque <shuque@upenn.edu>
-#
+# Authors:
+#   - Shumon Huque <shuque -@- upenn.edu>
+#   - Joerg Kastning <jkastning -@- my-it-brain.de>
+# Licence: GPL-2.0-or-later
+# Licence URL: https://spdx.org/licenses/GPL-2.0-or-later.html
 
 import os, sys, time
 import dns.message, dns.query
@@ -22,11 +25,29 @@ RETRIES=3
 TIMEOUT=3
 
 # List of DNS names to test for presence of AAAA records
+# The '.' at the end of the DNS name is important!
 QNAMES = [
-    "www.google.com.",
-    "www.facebook.com.",
-    "www.bing.com.",
-    "www.netflix.com.",
+    "github.com.",
+    "gitlab.com.",
+    "codeberg.org.",
+    "access.redhat.com.",
+    "api.access.redhat.com.",
+    # Container registries and Universal Base Image (UBI) repositories
+    # URL: https://access.redhat.com/articles/1525183
+    "registry.access.redhat.com.",
+    "registry.redhat.io.",
+    "registry.connect.redhat.com.",
+    "sso.redhat.com.",
+    "cdn-ubi.redhat.com.",
+    "cdn.quay.io.",
+    "cnd01.quay.io.",
+    "cnd02.quay.io.",
+    "cnd03.quay.io.",
+    # Red Hat Subscription Manager (RHSM) FQDNs
+    "subscripiton.rhsm.redhat.com.",
+    "cdn.redhat.com.",
+    "akamaiedge.net.",
+    "akamaitechnologies.com.",
     ]
 
 
@@ -37,7 +58,7 @@ def send_query_udp(qname, res_name, res_ip, timeout, retries):
     while (not gotresponse and (retries > 0)):
         retries -= 1
         try:
-            ## print "DEBUG: query %s %s" % (res_ip, qname)
+            ## print("DEBUG: query %s %s" % (res_ip, qname))
             res = dns.query.udp(msg, res_ip, timeout=timeout)
             gotresponse = True
         except dns.exception.Timeout:
@@ -51,14 +72,16 @@ for res_name, res_ip in RESOLVERS:
         res = send_query_udp(qname, res_name, res_ip, TIMEOUT, RETRIES)
         if res == None:
             rc = 1
-            print "%s,%s -> %s query timed out" % (res_name, res_ip, qname)
+            print("%s,%s -> %s query timed out" % (res_name, res_ip, qname))
             continue
         for rrset in res.answer:
             if rrset.rdtype == 28:             # RR type code for AAAA
+                ## print("%s,%s -> %s is returning AAAA" % \
+                ##     (res_name, res_ip, qname))
                 break
         else:
             rc = 1
-            print "%s,%s -> %s not returning AAAA" % \
-                (res_name, res_ip, qname)
+            print("%s,%s -> %s not returning AAAA" % \
+                (res_name, res_ip, qname))
 
 sys.exit(rc)

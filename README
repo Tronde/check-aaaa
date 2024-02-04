@@ -1,24 +1,27 @@
 Program:	check-aaaa: AAAA response checker
-Version:	0.3
-Author:		Shumon Huque <shuque@upenn.edu>
+Version:	0.4
+Authors:  - Shumon Huque <shuque -@- upenn.edu>
+          - Joerg Kastning <jkastning -@- my-it-brain.de>
 
 check-aaaa: A small python program to query a set of DNS names
 for the presence of AAAA records via a set of DNS recursive
 resolvers.
 
-I wrote this quick program on World IPv6 Launch Day (June 6th 2012),
-after I discovered that some websites were selectively delivering
+Shumon Huque wrote this quick program on World IPv6 Launch Day (June 6th
+2012), after he discovered that some websites were selectively delivering
 AAAA records to DNS resolvers, based on measurements by those websites
 of the quality of IPv6 connectivity from clients using those resolvers.
 Running this program periodically against your own resolvers can
-alert you to times when they end up on such AAAA blacklists. The
-four website names that are preconfigured into this script (google,
-facebook, netflix, and bing) have been known to implement such blacklists.
+alert you to times when they end up on such AAAA blacklists.
+
+I forked Shumon's project and edited the script to make it run with
+Python 3.x. And I added some FQDNs to the list which I like to check
+periodically if they return an AAAA record or not.
 
 Pre-requisites:
 
-	Python 2.x
-	dnspython module (http://www.dnspython.org/)
+	Python 3.x
+	dnspython module (https://www.dnspython.org/)
 
 Configuration:
 
@@ -57,6 +60,7 @@ did not get a AAAA response for www.google.com, while another
 
 
 # Copyright (C) 2012, Shumon Huque
+# Copyright (C) 2024, Joerg Kastning
 #
 # check-aaaa is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -73,4 +77,5 @@ did not get a AAAA response for www.google.com, while another
 # Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 #
-# Author: Shumon Huque <shuque -@- upenn.edu>
+# Authors: - Shumon Huque <shuque -@- upenn.edu>
+#          - Joerg Kastning <jkastning -@- my-it-brain.de>
