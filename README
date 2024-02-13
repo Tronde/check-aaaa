@@ -1,5 +1,5 @@
 Program:  check-aaaa: AAAA response checker
-Version:  1.0.0
+Version:  2.0.0
 Authors:  - Shumon Huque <shuque -@- upenn.edu>
           - Joerg Kastning <jkastning -@- my-it-brain.de>
 
@@ -26,9 +26,12 @@ Pre-requisites:
 Configuration:
 
     * Edit "check-aaaa" to configure your own list of DNS
-      recursive resolvers and your own list of DNS names 
-      that you want to test. These lists are defined in the
-      python lists RESOLVERS and QNAMES.
+      recursive resolvers in the python list RESOLVERS.
+    * Write the domains you would like to check in a TXT file
+      one domain per line, e.g. 'example.com.'.
+      **The dot at the end is important!**
+    * Pass the TXT file as an argument to the script
+      E.g.: `./check-aaaa domains.txt`
 
 Installation:
 
@@ -48,13 +51,13 @@ The following example has no output (and a return code of 0)
 indicating that all provided names eliciting AAAA reponses via
 all provided recursive resolvers.
 
-  $ check-aaaa
+  $ check-aaaa domains.txt
 
 The following example, shows that one of the resolvers (192.0.2.173)
 did not get a AAAA response for www.google.com, while another 
 (198.51.100.29) did not get a AAAA response for www.netflix.com.
 
-  $ check-aaaa
+  $ check-aaaa domains.txt
   resolver1,192.0.2.173 -> www.google.com. not returning AAAA
   resolver2,198.51.100.29 -> www.netflix.com. not returning AAAA
 
