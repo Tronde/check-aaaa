@@ -1,0 +1,15 @@
+access.redhat.com.
+api.access.redhat.com.
+registry.access.redhat.com.
+registry.redhat.io.
+registry.connect.redhat.com.
+sso.redhat.com.
+cdn-ubi.redhat.com.
+cdn.quay.io.
+cnd01.quay.io.
+cnd02.quay.io.
+cnd03.quay.io.
+subscripiton.rhsm.redhat.com.
+cdn.redhat.com.
+akamaiedge.net.
+akamaitechnologies.com.

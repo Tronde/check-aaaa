@@ -16,40 +16,22 @@ import dns.message, dns.query
 # tuples of shortname and IP address (IPv4 or IPv6). Replace these
 # with your own resolver addresses.
 RESOLVERS = [
-    ("resolver1", "192.0.2.173"),
-    ("resolver2", "198.51.100.29"),
-    ("resolver3", "10.4.4.4"),
+    ("resolver1", "192.168.11.3"),
+#    ("resolver2", "198.51.100.29"),
+#    ("resolver3", "10.4.4.4"),
     ]
 
 RETRIES=3
 TIMEOUT=3
 
-# List of DNS names to test for presence of AAAA records
+# A file with a list of DNS names to test for presence of AAAA records
+# is passed as an argument to this script. See TXT files in this repo
+# for examples.
 # The '.' at the end of the DNS name is important!
-QNAMES = [
-    "github.com.",
-    "gitlab.com.",
-    "codeberg.org.",
-    "access.redhat.com.",
-    "api.access.redhat.com.",
-    # Container registries and Universal Base Image (UBI) repositories
-    # URL: https://access.redhat.com/articles/1525183
-    "registry.access.redhat.com.",
-    "registry.redhat.io.",
-    "registry.connect.redhat.com.",
-    "sso.redhat.com.",
-    "cdn-ubi.redhat.com.",
-    "cdn.quay.io.",
-    "cnd01.quay.io.",
-    "cnd02.quay.io.",
-    "cnd03.quay.io.",
-    # Red Hat Subscription Manager (RHSM) FQDNs
-    "subscripiton.rhsm.redhat.com.",
-    "cdn.redhat.com.",
-    "akamaiedge.net.",
-    "akamaitechnologies.com.",
-    ]
+FILENAME = sys.argv[1]
 
+with open(FILENAME) as f:
+  QNAMES = [line.rstrip() for line in f]
 
 def send_query_udp(qname, res_name, res_ip, timeout, retries):
     gotresponse = False
@@ -65,7 +47,6 @@ def send_query_udp(qname, res_name, res_ip, timeout, retries):
             pass
     return res
 
-
 rc = 0
 for res_name, res_ip in RESOLVERS:
     for qname in QNAMES:
@@ -76,12 +57,12 @@ for res_name, res_ip in RESOLVERS:
             continue
         for rrset in res.answer:
             if rrset.rdtype == 28:             # RR type code for AAAA
-                ## print("%s,%s -> %s is returning AAAA" % \
-                ##     (res_name, res_ip, qname))
+                print("%s,%s -> %s is returning AAAA" % \
+                    (res_name, res_ip, qname))
                 break
-        else:
-            rc = 1
-            print("%s,%s -> %s not returning AAAA" % \
-                (res_name, res_ip, qname))
+#        else:
+#            rc = 1
+#            print("%s,%s -> %s not returning AAAA" % \
+#                (res_name, res_ip, qname))
 
 sys.exit(rc)
