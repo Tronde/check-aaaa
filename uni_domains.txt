@@ -235,7 +235,6 @@ www.ihi-zittau.de
 www.ils.de
 www.immobilienscout24.de
 www.inac-berlin.de
-www.instagram.com
 www.ipu-berlin.de
 www.ism.de
 www.iss-hamburg.de
@@ -440,6 +439,5 @@ www.uni-wuppertal.de
 www.wb-fernstudium.de
 www.wege-ins-ausland.de
 www.werkbund-werkstatt.de
-www.youtube.com
 www.zu.de
 www.zv.uni-leipzig.de
